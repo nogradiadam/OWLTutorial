@@ -28,7 +28,7 @@ public class PrintOWLLabels {
        
         
         OWLAnnotationProperty label = df
-                .getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_CLASS.getIRI());
+                .getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
         PrintWriter writer = null;
         try {
 			writer = new PrintWriter ("output_rdfsclass.txt", "UTF-8");
