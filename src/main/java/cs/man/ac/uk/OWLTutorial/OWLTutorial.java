@@ -9,7 +9,6 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 public class OWLTutorial {
 
 	public static void main (String[] args) {
-		System.out.println("Test");
 		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 		IRI ontologyIRI = IRI.create("http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology_ext.obo");
 		try {
