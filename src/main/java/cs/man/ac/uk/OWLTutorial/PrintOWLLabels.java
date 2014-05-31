@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.coode.owlapi.obo.parser.OBOVocabulary;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -15,7 +16,9 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
+import org.semanticweb.owlapi.vocab.OWLXMLVocabulary;
 
 public class PrintOWLLabels {
 
@@ -25,12 +28,12 @@ public class PrintOWLLabels {
 			throws OWLOntologyCreationException {
 		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 		OWLOntology ont = man.loadOntologyFromOntologyDocument(IRI
-				.create("file:/Users/AdamNogradi/Documents/workspace/OWLTutorial/goOne.owl"));
+				.create("file:/Users/AdamNogradi/Documents/workspace/OWLTutorial/go.owl"));
 		System.out.println("Loaded: " + ont.getOntologyID());
 
 		OWLDataFactory df = man.getOWLDataFactory();
 		OWLAnnotationProperty label = df
-				.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_CLASS.getIRI());
+				.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
 
 		PrintWriter writer = null;
 		try {
@@ -54,16 +57,10 @@ public class PrintOWLLabels {
 				for (OWLAnnotation annotation : cls.getAnnotations(ont, label)) {
 					if (annotation.getValue() instanceof OWLLiteral) {
 						OWLLiteral val = (OWLLiteral) annotation.getValue();
-						System.out.println(cls + " -> " + val.getLiteral());
 						writer.println(val.getLiteral());
 					}
 				}
 			}
-			
-//			if (!isObsoleteClass){
-//				writer.println(cls);
-//			}
-
 			isObsoleteClass = false;
 		}
 
