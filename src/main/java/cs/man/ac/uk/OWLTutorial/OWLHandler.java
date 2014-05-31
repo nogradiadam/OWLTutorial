@@ -4,7 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.coode.owlapi.obo.parser.OBOVocabulary;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -16,26 +15,28 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
-import org.semanticweb.owlapi.vocab.OWLXMLVocabulary;
 
-public class PrintOWLLabels {
+public class OWLHandler {
 
 	private final String OBSOLETE_CLASS_URI = "<http://www.geneontology.org/formats/oboInOwl#ObsoleteClass>";
+	private OWLOntology ont;
+	private OWLDataFactory df;
+	private PrintWriter writer = null;
 
-	public void shouldCreateAndReadAnnotations()
-			throws OWLOntologyCreationException {
+	public void loadOntology (String ontURL) {
 		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-		OWLOntology ont = man.loadOntologyFromOntologyDocument(IRI
-				.create("file:/Users/AdamNogradi/Documents/workspace/OWLTutorial/go.owl"));
+		try {
+			ont = man.loadOntologyFromOntologyDocument(IRI.create(ontURL));
+		} catch (OWLOntologyCreationException e) {
+			e.printStackTrace();
+		}
 		System.out.println("Loaded: " + ont.getOntologyID());
 
-		OWLDataFactory df = man.getOWLDataFactory();
-		OWLAnnotationProperty label = df
-				.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
+		df = man.getOWLDataFactory();
+	}
 
-		PrintWriter writer = null;
+	public void filterObsoleteClasses() {
 		try {
 			writer = new PrintWriter (new FileWriter("output_no_obsolete.txt"));
 		} catch (IOException e) {
@@ -43,6 +44,8 @@ public class PrintOWLLabels {
 		}
 
 		boolean isObsoleteClass = false;
+		OWLAnnotationProperty label = df
+				.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
 
 		for (OWLClass cls : ont.getClassesInSignature()) {
 			if (!(cls.getSuperClasses(ont).isEmpty())) {
@@ -66,5 +69,4 @@ public class PrintOWLLabels {
 
 		writer.close();
 	}
-
 }
